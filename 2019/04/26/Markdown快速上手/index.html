@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Markdown 语法练习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markdown 动手学">
+<meta property="og:url" content="http://example.com/2019/04/26/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/index.html">
+<meta property="og:site_name" content="Hytopia">
+<meta property="og:description" content="Markdown 语法练习">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2019/04/26/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/miska.jpg">
+<meta property="og:image" content="http://example.com/2019/04/26/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/la-estaci%C3%B3n-espacial-internacional.jpg">
+<meta property="article:published_time" content="2019-04-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-09T10:09:41.614Z">
+<meta property="article:author" content="Ryanhui">
+<meta property="article:tag" content="动手学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2019/04/26/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/miska.jpg">
+
+<link rel="canonical" href="http://example.com/2019/04/26/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Markdown 动手学 | Hytopia</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hytopia</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Memories Everglow</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/04/26/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/43368274?s=460&u=50a78f666213a52518d0076c1ca1cd9862076167&v=4">
+      <meta itemprop="name" content="Ryanhui">
+      <meta itemprop="description" content="写博客，不过是孤芳自赏">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hytopia">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Markdown 动手学
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-26 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-26T00:00:00+08:00">2019-04-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-09 18:09:41" itemprop="dateModified" datetime="2020-10-09T18:09:41+08:00">2020-10-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Markdown 语法练习</p>
+<a id="more"></a>
+
+<h1 id="段落、标题、区块代码"><a href="#段落、标题、区块代码" class="headerlink" title="段落、标题、区块代码"></a>段落、标题、区块代码</h1><h2 id="A-Second-Level-Header"><a href="#A-Second-Level-Header" class="headerlink" title="A Second Level Header"></a>A Second Level Header</h2><p>Now is the time for all good men to come to<br>the aid of their country. This is just a<br>regular paragraph.</p>
+<p>The quick brown fox jumped over the lazy<br>dog’s back.</p>
+<h3 id="Header-3"><a href="#Header-3" class="headerlink" title="Header 3"></a>Header 3</h3><blockquote>
+<p>This is a blockquote.</p>
+<p>This is the second paragraph in the blockquote.</p>
+<h2 id="This-is-an-H2-in-a-blockquote"><a href="#This-is-an-H2-in-a-blockquote" class="headerlink" title="This is an H2 in a blockquote"></a>This is an H2 in a blockquote</h2></blockquote>
+<h2 id="修辞和强调"><a href="#修辞和强调" class="headerlink" title="修辞和强调"></a>修辞和强调</h2><p>Some of these words <em>are emphasized</em>.<br>Some of these words <em>are emphasized also</em>.<br>Use two asterisks for <strong>strong emphasis</strong>.<br>Or, if you prefer, <strong>use two underscores instead</strong>.</p>
+<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul>
+<li>Candy.</li>
+<li>Gum.</li>
+<li>Booze.</li>
+</ul>
+<ul>
+<li>Candy.</li>
+<li>Gum.</li>
+<li>Booze.</li>
+</ul>
+<ul>
+<li>Candy.</li>
+<li>Gum.</li>
+<li>Booze.</li>
+</ul>
+<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2><ol>
+<li>Red</li>
+<li>Green</li>
+<li>Blue</li>
+</ol>
+<ul>
+<li><p>A list item.<br>With multiple paragraphs.</p>
+</li>
+<li><p>Another item in the list.</p>
+</li>
+</ul>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>This is an <a href="http://example.com/">example link</a>.</p>
+<p>This is an <a href="http://example.com/" title="With a Title">example link</a>.</p>
+<p>I get 10 times more traffic from <a target="_blank" rel="noopener" href="http://google.com/" title="Google">Google</a> than from<br><a target="_blank" rel="noopener" href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a target="_blank" rel="noopener" href="http://search.msn.com/" title="MSN Search">MSN</a>.</p>
+<p>I start my morning with a cup of coffee and<br><a target="_blank" rel="noopener" href="http://www.nytimes.com/">The New York Times</a>.</p>
+<h2 id="图片（title-是选择性的）"><a href="#图片（title-是选择性的）" class="headerlink" title="图片（title 是选择性的）"></a>图片（title 是选择性的）</h2><p><img src="Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/miska.jpg" alt="alt text" title="Title"></p>
+<p><img src="Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/la-estaci%C3%B3n-espacial-internacional.jpg" alt="alt text" title="Title"></p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>I strongly recommend against using any <code>&lt;blink&gt;</code> tags.</p>
+<p>I wish SmartyPants used named entities like <code>&amp;mdash;</code><br>instead of decimal-encoded entites like <code>&amp;#8212;</code>.</p>
+<p>If you want your page to validate under XHTML 1.0 Strict,<br>you’ve got to put paragraph tags in your blockquotes:</p>
+<blockquote>
+<p>For example.</p>
+</blockquote>
+
+<h2 id="视频与音乐"><a href="#视频与音乐" class="headerlink" title="视频与音乐"></a>视频与音乐</h2><p>插入音乐</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=470 height=86 src="//music.163.com/outchain/player?type=2&id=407679999&auto=0&height=66"></iframe>
+
+<p>插入视频  <a class="btn" target="_blank" rel="noopener" href="https://www.bilibili.com/video/av18915403" title="跳转到视频原址">
+            <i class="fa fa-play fa-fw fa-lg"></i>BiliBili
+          </a></p>
+<iframe src="//player.bilibili.com/player.html?aid=18915403&cid=30869031&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width=480 height=360> </iframe>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8A%A8%E6%89%8B%E5%AD%A6/" rel="tag"># 动手学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/" rel="next" title="python 数据分析动手学 with Pandas">
+      python 数据分析动手学 with Pandas <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AE%B5%E8%90%BD%E3%80%81%E6%A0%87%E9%A2%98%E3%80%81%E5%8C%BA%E5%9D%97%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">段落、标题、区块代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Second-Level-Header"><span class="nav-number">1.1.</span> <span class="nav-text">A Second Level Header</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Header-3"><span class="nav-number">1.1.1.</span> <span class="nav-text">Header 3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#This-is-an-H2-in-a-blockquote"><span class="nav-number">1.2.</span> <span class="nav-text">This is an H2 in a blockquote</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E8%BE%9E%E5%92%8C%E5%BC%BA%E8%B0%83"><span class="nav-number">1.3.</span> <span class="nav-text">修辞和强调</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%97%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">列表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="nav-number">2.1.</span> <span class="nav-text">无序列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="nav-number">2.2.</span> <span class="nav-text">有序列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">2.3.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%EF%BC%88title-%E6%98%AF%E9%80%89%E6%8B%A9%E6%80%A7%E7%9A%84%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">图片（title 是选择性的）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.5.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E4%B8%8E%E9%9F%B3%E4%B9%90"><span class="nav-number">2.6.</span> <span class="nav-text">视频与音乐</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryanhui"
+      src="https://avatars1.githubusercontent.com/u/43368274?s=460&u=50a78f666213a52518d0076c1ca1cd9862076167&v=4">
+  <p class="site-author-name" itemprop="name">Ryanhui</p>
+  <div class="site-description" itemprop="description">写博客，不过是孤芳自赏</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ranhuiryan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ranhuiryan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qdgjhrh@outlook.com" title="E-Mail → mailto:qdgjhrh@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/wbgjh" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;wbgjh" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryanhui</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

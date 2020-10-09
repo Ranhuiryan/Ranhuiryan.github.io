@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="头发苦短，我用python                           使用 Python 的 Pandas 类库实现了对国家统计局地区统计数据的自动整理，快速对接到动态排名数据可视化模板。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python 数据分析动手学 with Pandas">
+<meta property="og:url" content="http://example.com/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/index.html">
+<meta property="og:site_name" content="Hytopia">
+<meta property="og:description" content="头发苦短，我用python                           使用 Python 的 Pandas 类库实现了对国家统计局地区统计数据的自动整理，快速对接到动态排名数据可视化模板。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/2019-05-07.png">
+<meta property="og:image" content="http://example.com/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/2019-05-07-223547.png">
+<meta property="og:image" content="http://example.com/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/2019-05-07-223837.png">
+<meta property="og:image" content="http://example.com/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/20181121192650776.png">
+<meta property="article:published_time" content="2019-05-07T13:52:18.000Z">
+<meta property="article:modified_time" content="2020-10-09T10:09:41.645Z">
+<meta property="article:author" content="Ryanhui">
+<meta property="article:tag" content="动手学">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="Pandas">
+<meta property="article:tag" content="数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/2019-05-07.png">
+
+<link rel="canonical" href="http://example.com/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>python 数据分析动手学 with Pandas | Hytopia</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hytopia</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Memories Everglow</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/05/07/python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/43368274?s=460&u=50a78f666213a52518d0076c1ca1cd9862076167&v=4">
+      <meta itemprop="name" content="Ryanhui">
+      <meta itemprop="description" content="写博客，不过是孤芳自赏">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hytopia">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python 数据分析动手学 with Pandas
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-07 21:52:18" itemprop="dateCreated datePublished" datetime="2019-05-07T21:52:18+08:00">2019-05-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-09 18:09:41" itemprop="dateModified" datetime="2020-10-09T18:09:41+08:00">2020-10-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote class="blockquote-center">
+            <i class="fa fa-quote-left"></i>
+            <p>头发苦短，我用python</p>
+
+            <i class="fa fa-quote-right"></i>
+          </blockquote>
+
+<p>使用 Python 的 Pandas 类库实现了对国家统计局地区统计数据的自动整理，快速对接到动态排名数据可视化模板。</p>
+<a id="more"></a>
+
+<h2 id="必要开发环境"><a href="#必要开发环境" class="headerlink" title="必要开发环境"></a>必要开发环境</h2><ul>
+<li>Python 3.7.3</li>
+<li>Pandas</li>
+<li>Numpy</li>
+</ul>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h3><p>安装 Pandas 第三类库，在终端输入指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pandas</span><br></pre></td></tr></table></figure>
+
+<p>由于 Pandas 基于 Numpy，因此执行上述指令时将自动安装 Numpy。</p>
+<h3 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h3><p>大数据的获取一般分两种手段：网络直接下载和爬虫。前者较为简单，但能够获取的数据量有限，且有时需要资金投入。后者学习门槛较高，但可获取的数据面广泛。本次以国家统计局统计的近20年各地区年生产总值为例，实现数据快速分析整理。</p>
+<p>进入<a target="_blank" rel="noopener" href="http://data.stats.gov.cn/">国家数据</a>，点击地区数据下的分省年度数据。</p>
+<p><img src="python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/2019-05-07.png" alt="数据库查询入口"></p>
+<p>选择指标“地区生产总值”。</p>
+<p><img src="python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/2019-05-07-223547.png" alt="选择指标“地区生产总值”"></p>
+<p>点击下载，选择 csv 格式。</p>
+<p><img src="python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/2019-05-07-223837.png"></p>
+<p>打开下载好的 csv 文件，格式如下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">数据库：分省年度数据</span><br><span class="line">指标：地区生产总值(亿元)</span><br><span class="line">时间：最近20年</span><br><span class="line">地区,2018年,2017年,2016年,2015年,2014年,2013年,2012年,2011年,2010年,2009年,2008年,2007年,2006年,2005年,2004年,2003年,2002年,2001年,2000年,1999年</span><br><span class="line">北京市,,28014.94,25669.13,23014.59,21330.83,19800.81,17879.40,16251.93,14113.58,12153.03,11115.00,9846.81,8117.78,6969.52,6033.21,5007.21,4315.00,3707.96,3161.66,2678.82</span><br><span class="line">天津市,,18549.19,17885.39,16538.19,15726.93,14442.01,12893.88,11307.28,9224.46,7521.85,6719.01,5252.76,4462.74,3905.64,3110.97,2578.03,2150.76,1919.09,1701.88,1500.95</span><br><span class="line">河北省,,34016.32,32070.45,29806.11,29421.15,28442.95,26575.01,24515.76,20394.26,17235.48,16011.97,13607.32,11467.60,10012.11,8477.63,6921.29,6018.28,5516.76,5043.96,4514.19</span><br><span class="line">...</span><br><span class="line">青海省,,2624.83,2572.49,2417.05,2303.32,2122.06,1893.54,1670.44,1350.43,1081.27,1018.62,797.35,648.50,543.32,466.10,390.20,340.65,300.13,263.68,239.38</span><br><span class="line">宁夏回族自治区,,3443.56,3168.59,2911.77,2752.10,2577.57,2341.29,2102.21,1689.65,1353.31,1203.92,919.11,725.90,612.61,537.11,445.36,377.16,337.44,295.02,264.58</span><br><span class="line">新疆维吾尔自治区,,10881.96,9649.70,9324.80,9273.46,8443.84,7505.31,6610.05,5437.47,4277.05,4183.21,3523.16,3045.26,2604.19,2209.09,1886.35,1612.65,1491.60,1363.56,1163.17</span><br><span class="line">&quot;注：本表按当年价格计算。2004年以前地区生产总值数据执行《国民经济行业分类》（GB&#x2F;T4754-1994），2004-2012年地区生产总值数据执行《国民经济行业分类》（GB&#x2F;T4754-2002）,三次产业划分根据《三次产业划分规定》（2003）。2013年开始，行业分类执行《国民经济行业分类》（GB&#x2F;T4754-2011），三次产业划分根据《三次产业划分规定》（2012）。&quot;</span><br><span class="line">数据来源：国家统计局</span><br></pre></td></tr></table></figure>
+
+<p>可见原始格式很难满足我们的要求，因此下一步将使用 python 将该数据表整理为我们需要的格式。</p>
+<h2 id="数据整理"><a href="#数据整理" class="headerlink" title="数据整理"></a>数据整理</h2><h3 id="导入-csv-文件"><a href="#导入-csv-文件" class="headerlink" title="导入 csv 文件"></a>导入 csv 文件</h3><p>使用 Pandas 中的 <code>read_csv()</code> 函数读入 csv 文件，如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">s_data = pd.read_csv(<span class="string">&#x27;test.csv&#x27;</span>, skiprows = <span class="number">3</span>, encoding = <span class="string">&#x27;utf-8&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><code>filepath_or_buffer</code> - 读取文件路径，可以是URL，可用URL类型包括：http, ftp, s3。</li>
+<li><code>skiprows</code> - 需要忽略的行数（从文件开始处算起），或需要跳过的行号列表（从0开始）。此处需删除前三行表头，设置 <code>skiprows = 3</code>。</li>
+<li><code>skipfooter</code> - 从文件尾部开始忽略。 (c引擎不支持)</li>
+<li><code>encoding</code> - 指定字符集类型，通常指定为’utf-8’。<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/codecs.html#standard-encodings">List of Python standard encodings</a></li>
+</ul>
+<p>其余<a target="_blank" rel="noopener" href="https://blog.csdn.net/orangefly0214/article/details/80756330#">参数详解</a></p>
+<h3 id="整理原始数据"><a href="#整理原始数据" class="headerlink" title="整理原始数据"></a>整理原始数据</h3><p>使用 <code>dropna()</code> 函数删除空行与空列，函数形式为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataFrame.dropna(axis=<span class="number">0</span>, how=<span class="string">&#x27;any&#x27;</span>, thresh=<span class="literal">None</span>, subset=<span class="literal">None</span>, inplace=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li>axis<ul>
+<li>axis=0: 删除包含缺失值的行</li>
+<li>axis=1: 删除包含缺失值的列</li>
+</ul>
+</li>
+<li>how: 与axis配合使用<ul>
+<li>how=’any’ :只要有缺失值出现，就删除该行货列</li>
+<li>how=’all’: 所有的值都缺失，才删除行或列</li>
+</ul>
+</li>
+<li>thresh： axis中至少有thresh个非缺失值，否则删除。比如 axis=0，thresh=10：标识如果该行中非缺失值的数量小于10，将删除改行。</li>
+<li>subset: list，在哪些列中查看是否有缺失值</li>
+<li>inplace: 是否在原数据上操作。如果为真，返回None否则返回新的copy，去掉了缺失值</li>
+</ul>
+<p>此处需要删除没有统计数据的2018年，以及表格底部的说明。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s_data = s_data.dropna(axis=<span class="number">1</span>, how=<span class="string">&#x27;all&#x27;</span>) <span class="comment">#删除空列（未统计年份）</span></span><br><span class="line">s_data = s_data.dropna(axis=<span class="number">0</span>, how=<span class="string">&#x27;any&#x27;</span>) <span class="comment">#删除空行（底部说明）</span></span><br></pre></td></tr></table></figure>
+
+<p>转置表格，方便下一步处理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s_data = s_data.T</span><br></pre></td></tr></table></figure>
+
+<h3 id="将数据写入目标格式"><a href="#将数据写入目标格式" class="headerlink" title="将数据写入目标格式"></a>将数据写入目标格式</h3><p>动态排名数据可视化模板要求的数据格式为：</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>type</th>
+<th>value</th>
+<th>date</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>名称1</td>
+<td>类型1</td>
+<td>值1</td>
+<td>日期1</td>
+</tr>
+<tr>
+<td>名称2</td>
+<td>类型2</td>
+<td>值2</td>
+<td>日期2</td>
+</tr>
+</tbody></table>
+<p>其中“名称”会出现在柱状图的左侧作为Y轴，而“类型-名称”会作为附加信息出现在柱状图上。类型与柱状图的颜色相关，建议命名为不包含空格或者特殊符号的中英文字符。值与柱状图的长度绑定，必须是整数或浮点数。日期建议使用的格式为”YYYY-MM-DD”。</p>
+<p>新建一个空 DataFrame 数据表以储存输出的数据，其列索引为 <code>[&#39;name&#39;,&#39;type&#39;,&#39;value&#39;,&#39;date&#39;]</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o_data = pd.DataFrame(columns = [<span class="string">&#x27;name&#x27;</span>,<span class="string">&#x27;type&#x27;</span>,<span class="string">&#x27;value&#x27;</span>,<span class="string">&#x27;date&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>同时新建一个名为 <code>temp</code> 的空数据表，其行数与 <code>o_data</code> 相同，而列数为统计省份的数量。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">temp = pd.DataFrame(columns = [<span class="string">&#x27;name&#x27;</span>,<span class="string">&#x27;type&#x27;</span>,<span class="string">&#x27;value&#x27;</span>,<span class="string">&#x27;date&#x27;</span>], index = np.arange(<span class="number">0</span>,s_data.shape[<span class="number">1</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>s_data.shape[1]</code> 为原始数据表的列数</p>
+<p>遍历一年中个省份的地方生产总值，并分别写到 <code>temp</code> 个对应位置中，将各年数据合并至 <code>o_data</code> 中即可。</p>
+<p>实现代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,len(s_data)):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>,s_data.shape[<span class="number">1</span>]):</span><br><span class="line">        temp.iloc[j][<span class="string">&#x27;name&#x27;</span>] = s_data.loc[<span class="string">&#x27;地区&#x27;</span>][j]    <span class="comment">#将地区名写入 name 列</span></span><br><span class="line">        temp.iloc[j][<span class="string">&#x27;type&#x27;</span>] = s_data.index[<span class="number">0</span>]      <span class="comment">#将“地区”写入 type 列（可省略）</span></span><br><span class="line">        temp.iloc[j][<span class="string">&#x27;value&#x27;</span>] = s_data.iloc[i][j]       <span class="comment">#将对应生产总值写入 value 列</span></span><br><span class="line">        temp.iloc[j][<span class="string">&#x27;date&#x27;</span>] = s_data.index[i]      <span class="comment">#将对应年份写入 date 列</span></span><br><span class="line">    o_data = pd.concat([o_data,temp],ignore_index=<span class="literal">True</span>)     <span class="comment">#将各年数据整合到输出表格中</span></span><br></pre></td></tr></table></figure>
+
+<p><code>len(s_data)</code> 为原始数据表的行数。索引 DataFrame 中特定元素值由两种方法：</p>
+<ol>
+<li><code>df.iloc</code> - 根据元素位置；</li>
+<li><code>df.loc</code> - 根据行索引。</li>
+</ol>
+<p>使用 <code>pd.concat()</code> 将两个数据表格按先后顺序合并，将 <code>ignore_index</code> 打开。</p>
+<h3 id="整理输出数据"><a href="#整理输出数据" class="headerlink" title="整理输出数据"></a>整理输出数据</h3><p>输出的数据表格中年份是按照降序排列的，直接导入可视化模板的话将按时间倒序展示，故使用 <code>sort_values()</code> 函数对表格数据重新排列，其形式如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataFrame.sort_values(by, axis=<span class="number">0</span>, ascending=<span class="literal">True</span>, inplace=<span class="literal">False</span>, kind=<span class="string">&#x27;quicksort&#x27;</span>, na_position=<span class="string">&#x27;last&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<p><img src="python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%8A%A8%E6%89%8B%E5%AD%A6-with-Pandas/20181121192650776.png" alt="sort_values()函数的具体参数"></p>
+<p>使用 <code>sort_values()</code> 函数时要注意，默认的 inplace 设置是 False ，并没有对本体进行覆盖，可能会导致排序不成功的问题。此时需要设置 <code>inplace=True</code>，或者手动赋值给输出变量。</p>
+<p>对 <code>o_data</code> 中的 date 列进行升序排序：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o_data = o_data.sort_values(by= [<span class="string">&#x27;date&#x27;</span>], ascending= <span class="literal">True</span>) <span class="comment">#对年份重新排序</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="导出-csv-文件"><a href="#导出-csv-文件" class="headerlink" title="导出 csv 文件"></a>导出 csv 文件</h3><p>关闭行索引，以 utf-8 格式导出到 csv 文件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o_data.to_csv(<span class="string">&#x27;output.csv&#x27;</span>, encoding = <span class="string">&#x27;utf-8&#x27;</span>, index= <span class="literal">False</span> )</span><br></pre></td></tr></table></figure>
+
+<p>注意 <code>to_csv()</code> 是 DataFrame 类的方法，<code>read_csv()</code> 是 pandas 的方法。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8A%A8%E6%89%8B%E5%AD%A6/" rel="tag"># 动手学</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/Pandas/" rel="tag"># Pandas</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/26/Markdown%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/" rel="prev" title="Markdown 动手学">
+      <i class="fa fa-chevron-left"></i> Markdown 动手学
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/25/HTML-%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%881%EF%BC%89/" rel="next" title="HTML 动手学（1）">
+      HTML 动手学（1） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">必要开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">安装软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">2.2.</span> <span class="nav-text">获取数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%95%B4%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">数据整理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5-csv-%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">导入 csv 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E7%90%86%E5%8E%9F%E5%A7%8B%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.</span> <span class="nav-text">整理原始数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5%E7%9B%AE%E6%A0%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text">将数据写入目标格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E7%90%86%E8%BE%93%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">3.4.</span> <span class="nav-text">整理输出数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA-csv-%E6%96%87%E4%BB%B6"><span class="nav-number">3.5.</span> <span class="nav-text">导出 csv 文件</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryanhui"
+      src="https://avatars1.githubusercontent.com/u/43368274?s=460&u=50a78f666213a52518d0076c1ca1cd9862076167&v=4">
+  <p class="site-author-name" itemprop="name">Ryanhui</p>
+  <div class="site-description" itemprop="description">写博客，不过是孤芳自赏</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ranhuiryan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ranhuiryan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qdgjhrh@outlook.com" title="E-Mail → mailto:qdgjhrh@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/wbgjh" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;wbgjh" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryanhui</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

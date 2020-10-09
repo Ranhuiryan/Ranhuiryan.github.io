@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="观察数据、导入数据、划分特征和标签、划分训练集和测试集、构建模型，模型可视化 Bilibili视频教程：同济子豪兄">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 数据分析与可视化动手学：泡沫铝应力应变关系实验数据处理（线性回归）">
+<meta property="og:url" content="http://example.com/2019/06/10/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/index.html">
+<meta property="og:site_name" content="Hytopia">
+<meta property="og:description" content="观察数据、导入数据、划分特征和标签、划分训练集和测试集、构建模型，模型可视化 Bilibili视频教程：同济子豪兄">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2019/06/10/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/output_26_0.png">
+<meta property="og:image" content="http://example.com/2019/06/10/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/output_27_0.png">
+<meta property="article:published_time" content="2019-06-10T07:55:57.000Z">
+<meta property="article:modified_time" content="2020-10-09T10:09:41.716Z">
+<meta property="article:author" content="Ryanhui">
+<meta property="article:tag" content="动手学">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="Pandas">
+<meta property="article:tag" content="数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2019/06/10/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/output_26_0.png">
+
+<link rel="canonical" href="http://example.com/2019/06/10/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Python 数据分析与可视化动手学：泡沫铝应力应变关系实验数据处理（线性回归） | Hytopia</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hytopia</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Memories Everglow</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/06/10/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/43368274?s=460&u=50a78f666213a52518d0076c1ca1cd9862076167&v=4">
+      <meta itemprop="name" content="Ryanhui">
+      <meta itemprop="description" content="写博客，不过是孤芳自赏">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hytopia">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python 数据分析与可视化动手学：泡沫铝应力应变关系实验数据处理（线性回归）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-10 15:55:57" itemprop="dateCreated datePublished" datetime="2019-06-10T15:55:57+08:00">2019-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-09 18:09:41" itemprop="dateModified" datetime="2020-10-09T18:09:41+08:00">2020-10-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>观察数据、导入数据、划分特征和标签、划分训练集和测试集、构建模型，模型可视化</p>
+<p>Bilibili视频教程：<a target="_blank" rel="noopener" href="https://space.bilibili.com/1900783/#/">同济子豪兄</a></p>
+<a id="more"></a>
+
+<h1 id="第1步：导入数据分析库pandas，数据可视化库matplotlib"><a href="#第1步：导入数据分析库pandas，数据可视化库matplotlib" class="headerlink" title="第1步：导入数据分析库pandas，数据可视化库matplotlib"></a>第1步：导入数据分析库pandas，数据可视化库matplotlib</h1><p><code>%matplotlib inline</code>是Ipython的魔法函数，其作用是使matplotlib绘制的图像嵌入在juptyer notebook的单元格里</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+
+<h1 id="第2步：导入数据集，查看数据集"><a href="#第2步：导入数据集，查看数据集" class="headerlink" title="第2步：导入数据集，查看数据集"></a>第2步：导入数据集，查看数据集</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入数据集，筛选压力值在 1000N~10000N 的数据</span></span><br><span class="line">dataset = pd.read_excel(<span class="string">&#x27;./2#.xls&#x27;</span>)</span><br><span class="line">dataset = dataset[(dataset[<span class="string">&quot;试验力(N)&quot;</span>]&lt;<span class="number">10000</span>) &amp; (dataset[<span class="string">&quot;试验力(N)&quot;</span>]&gt;<span class="number">1000</span>)]</span><br><span class="line">dataset.head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type(dataset)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandas.core.frame.DataFrame</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataset.shape</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(144, 7)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataset.columns</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Index([<span class="string">&#x27;试验力(N)&#x27;</span>, <span class="string">&#x27;变形1(mm)&#x27;</span>, <span class="string">&#x27;变形2(mm)&#x27;</span>, <span class="string">&#x27;位移(mm)&#x27;</span>, <span class="string">&#x27;横梁速度(mm/min)&#x27;</span>, <span class="string">&#x27;时间(ms)&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;温度&#x27;</span>],</span><br><span class="line">      dtype=<span class="string">&#x27;object&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataset.info()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;class <span class="string">&#x27;pandas.core.frame.DataFrame&#x27;</span>&gt;</span><br><span class="line">Int64Index: 144 entries, 545 to 688</span><br><span class="line">Data columns (total 7 columns):</span><br><span class="line">试验力(N)          144 non-null float64</span><br><span class="line">变形1(mm)         144 non-null int64</span><br><span class="line">变形2(mm)         144 non-null int64</span><br><span class="line">位移(mm)          144 non-null float64</span><br><span class="line">横梁速度(mm/min)    144 non-null int64</span><br><span class="line">时间(ms)          144 non-null int64</span><br><span class="line">温度              144 non-null int64</span><br><span class="line">dtypes: float64(2), int64(5)</span><br><span class="line">memory usage: 9.0 KB</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看数据集统计特征</span></span><br><span class="line">dataset.describe()</span><br></pre></td></tr></table></figure>
+
+<table><thead><tr style="text-align: right;"><th></th><th>试验力(N)</th><th>变形1(mm)</th><th>变形2(mm)</th><th>位移(mm)</th><th>横梁速度(mm/min)</th><th>时间(ms)</th><th>温度</th></tr></thead><tbody><tr><th>count</th><td>144.000000</td><td>144.0</td><td>144.0</td><td>144.000000</td><td>144.0</td><td>144.000000</td><td>144.0</td></tr><tr><th>mean</th><td>5933.107639</td><td>0.0</td><td>0.0</td><td>3.313668</td><td>-6.0</td><td>33070.159722</td><td>0.0</td></tr><tr><th>std</th><td>2780.499253</td><td>0.0</td><td>0.0</td><td>0.223733</td><td>0.0</td><td>2251.122936</td><td>0.0</td></tr><tr><th>min</th><td>1002.000000</td><td>0.0</td><td>0.0</td><td>2.931965</td><td>-6.0</td><td>29234.000000</td><td>0.0</td></tr><tr><th>25%</th><td>3452.125000</td><td>0.0</td><td>0.0</td><td>3.121751</td><td>-6.0</td><td>31129.250000</td><td>0.0</td></tr><tr><th>50%</th><td>6279.500000</td><td>0.0</td><td>0.0</td><td>3.311385</td><td>-6.0</td><td>33039.500000</td><td>0.0</td></tr><tr><th>75%</th><td>8387.250000</td><td>0.0</td><td>0.0</td><td>3.499875</td><td>-6.0</td><td>34937.500000</td><td>0.0</td></tr><tr><th>max</th><td>9975.500000</td><td>0.0</td><td>0.0</td><td>3.700565</td><td>-6.0</td><td>36953.000000</td><td>0.0</td></tr></tbody></table>
+
+<h1 id="第3步：提取特征"><a href="#第3步：提取特征" class="headerlink" title="第3步：提取特征"></a>第3步：提取特征</h1><p>提取特征：位移 提取标签：试验力</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">feature_columns = [<span class="string">&#x27;位移(mm)&#x27;</span>]</span><br><span class="line">label_column = [<span class="string">&#x27;试验力(N)&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">features = dataset[feature_columns]</span><br><span class="line">label = dataset[label_column]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">features.head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<table><thead><tr><th></th><th>位移(mm)</th></tr></thead><tbody><tr><th>545</th><td>2.931965</td></tr><tr><th>546</th><td>2.937760</td></tr><tr><th>547</th><td>2.943860</td></tr><tr><th>548</th><td>2.947825</td></tr><tr><th>549</th><td>2.953925</td></tr><tr><th>550</th><td>2.957890</td></tr><tr><th>551</th><td>2.963685</td></tr><tr><th>552</th><td>2.971615</td></tr><tr><th>553</th><td>2.975580</td></tr><tr><th>554</th><td>2.979545</td></tr></tbody></table>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type(features)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandas.core.frame.DataFrame</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">label.head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<div><table><thead><tr style="text-align: right;"><th></th><th>试验力(N)</th></tr></thead><tbody><tr><th>545</th><td>1002.0</td></tr><tr><th>546</th><td>1059.0</td></tr><tr><th>547</th><td>1119.0</td></tr><tr><th>548</th><td>1159.5</td></tr><tr><th>549</th><td>1203.0</td></tr><tr><th>550</th><td>1256.0</td></tr><tr><th>551</th><td>1321.5</td></tr><tr><th>552</th><td>1387.5</td></tr><tr><th>553</th><td>1455.5</td></tr><tr><th>554</th><td>1502.0</td></tr></tbody></table></div>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X = features.values</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Y = label.values</span><br></pre></td></tr></table></figure>
+
+<h1 id="第4步：建立模型"><a href="#第4步：建立模型" class="headerlink" title="第4步：建立模型"></a>第4步：建立模型</h1><p>拆分数据，四分之三的数据作为训练集，四分之一的数据作为测试集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">X_train, X_test, Y_train, Y_test = train_test_split( X, Y, test_size = <span class="number">1</span>/<span class="number">4</span>, random_state = <span class="number">0</span>) </span><br></pre></td></tr></table></figure>
+
+<p>用训练集的数据进行训练</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line">regressor = LinearRegression()</span><br><span class="line">regressor = regressor.fit(X_train, Y_train)</span><br></pre></td></tr></table></figure>
+
+<p>对测试集进行预测</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Y_init = regressor.predict(X_train)</span><br><span class="line">Y_pred = regressor.predict(X_test)</span><br></pre></td></tr></table></figure>
+
+<p>可视化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 散点图：红色点表示训练集的点</span></span><br><span class="line">plt.scatter(X_train , Y_train, color = <span class="string">&#x27;red&#x27;</span>)</span><br><span class="line"><span class="comment"># 线图：蓝色线表示由训练集训练出的线性回归模型</span></span><br><span class="line">plt.plot(X_train , Y_init, color =<span class="string">&#x27;blue&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/output_26_0.png" alt="png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 散点图：红色点表示测试集的点</span></span><br><span class="line">plt.scatter(X_test , Y_test, color = <span class="string">&#x27;red&#x27;</span>)</span><br><span class="line"><span class="comment"># 线图：蓝色线表示对测试集进行预测的结果</span></span><br><span class="line">plt.plot(X_test , Y_pred, color =<span class="string">&#x27;blue&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%9A%E6%B3%A1%E6%B2%AB%E9%93%9D%E5%BA%94%E5%8A%9B%E5%BA%94%E5%8F%98%E5%85%B3%E7%B3%BB%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%89/output_27_0.png" alt="png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8A%A8%E6%89%8B%E5%AD%A6/" rel="tag"># 动手学</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/Pandas/" rel="tag"># Pandas</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/30/HTML-%E5%8A%A8%E6%89%8B%E5%AD%A6%EF%BC%883%EF%BC%89/" rel="prev" title="HTML 动手学（3）">
+      <i class="fa fa-chevron-left"></i> HTML 动手学（3）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/15/Python-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%EF%BC%8CIPython-%E5%92%8C-Jupyter-Notebook/" rel="next" title="Python 语言基础，IPython 和 Jupyter Notebook">
+      Python 语言基础，IPython 和 Jupyter Notebook <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC1%E6%AD%A5%EF%BC%9A%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%BA%93pandas%EF%BC%8C%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E5%BA%93matplotlib"><span class="nav-number">1.</span> <span class="nav-text">第1步：导入数据分析库pandas，数据可视化库matplotlib</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC2%E6%AD%A5%EF%BC%9A%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86%EF%BC%8C%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">第2步：导入数据集，查看数据集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC3%E6%AD%A5%EF%BC%9A%E6%8F%90%E5%8F%96%E7%89%B9%E5%BE%81"><span class="nav-number">3.</span> <span class="nav-text">第3步：提取特征</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC4%E6%AD%A5%EF%BC%9A%E5%BB%BA%E7%AB%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">第4步：建立模型</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryanhui"
+      src="https://avatars1.githubusercontent.com/u/43368274?s=460&u=50a78f666213a52518d0076c1ca1cd9862076167&v=4">
+  <p class="site-author-name" itemprop="name">Ryanhui</p>
+  <div class="site-description" itemprop="description">写博客，不过是孤芳自赏</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ranhuiryan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ranhuiryan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qdgjhrh@outlook.com" title="E-Mail → mailto:qdgjhrh@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/wbgjh" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;wbgjh" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryanhui</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

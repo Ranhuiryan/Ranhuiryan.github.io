@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="麻麻再也不用担心我用科学上网啦 &#x3D;￣ω￣&#x3D;                           本实录均基于 Vultr 日本节点 CentOS 7.5 x64 服务器搭建运行实际效果总结得出，可能无法代表不同地区不同系统的服务器节点的运行效果。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Debian 9 远程服务器搭建和应用踩坑实录">
+<meta property="og:url" content="http://example.com/2019/08/04/CentOS-7-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95/index.html">
+<meta property="og:site_name" content="Hytopia">
+<meta property="og:description" content="麻麻再也不用担心我用科学上网啦 &#x3D;￣ω￣&#x3D;                           本实录均基于 Vultr 日本节点 CentOS 7.5 x64 服务器搭建运行实际效果总结得出，可能无法代表不同地区不同系统的服务器节点的运行效果。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2019/08/04/CentOS-7-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95/CentOS-7-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95/20180609012635632.png">
+<meta property="article:published_time" content="2019-08-04T02:45:21.000Z">
+<meta property="article:modified_time" content="2020-10-09T10:09:41.604Z">
+<meta property="article:author" content="Ryanhui">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="MariaSQL">
+<meta property="article:tag" content="网络技术">
+<meta property="article:tag" content="科学使用">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2019/08/04/CentOS-7-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95/CentOS-7-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95/20180609012635632.png">
+
+<link rel="canonical" href="http://example.com/2019/08/04/CentOS-7-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Debian 9 远程服务器搭建和应用踩坑实录 | Hytopia</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hytopia</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Memories Everglow</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/04/CentOS-7-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/43368274?s=460&u=50a78f666213a52518d0076c1ca1cd9862076167&v=4">
+      <meta itemprop="name" content="Ryanhui">
+      <meta itemprop="description" content="写博客，不过是孤芳自赏">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hytopia">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Debian 9 远程服务器搭建和应用踩坑实录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-04 10:45:21" itemprop="dateCreated datePublished" datetime="2019-08-04T10:45:21+08:00">2019-08-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-09 18:09:41" itemprop="dateModified" datetime="2020-10-09T18:09:41+08:00">2020-10-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote class="blockquote-center">
+            <i class="fa fa-quote-left"></i>
+            <p>麻麻再也不用担心我用科学上网啦 =￣ω￣=</p>
+
+            <i class="fa fa-quote-right"></i>
+          </blockquote>
+
+<p>本实录均基于 Vultr 日本节点 CentOS 7.5 x64 服务器搭建运行实际效果总结得出，可能无法代表不同地区不同系统的服务器节点的运行效果。</p>
+<a id="more"></a>
+
+<h1 id="连接服务器：Xshell，Putty"><a href="#连接服务器：Xshell，Putty" class="headerlink" title="连接服务器：Xshell，Putty"></a>连接服务器：Xshell，Putty</h1><p>可以在官网上注册获取 <a target="_blank" rel="noopener" href="https://www.netsarang.com/en/free-for-home-school/">Xshell</a> 的免费版本，也可以使用 <a target="_blank" rel="noopener" href="https://www.putty.org/">Putty</a> 作为代替。</p>
+<h2 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h2><p>使用 Xshell 第一次连接服务器时需要输入 VPS 运营商给出的用户密码，可以保存登录凭证，重新连接服务器时无需再次输入密码。Putty 每次登陆时都需要输入密码。</p>
+<p>使用 Putty 时，长时间没有更新的会话会自动断联，可以通过在 Connection 选项卡中设置定时向服务器发送空数据包，避免长时间不用反复重连。</p>
+<p><img src="CentOS-7-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95/20180609012635632.png"></p>
+<h2 id="注销"><a href="#注销" class="headerlink" title="注销"></a>注销</h2><p>结束操作后一定要注销会话，避免服务器账户还在登录的状态，占用服务器资源。</p>
+<p>在 Xshell 或者 Putty 中均可按快捷键 <code>ctrl+d</code> 快速结束访问。</p>
+<h1 id="内网穿透：Frp"><a href="#内网穿透：Frp" class="headerlink" title="内网穿透：Frp"></a>内网穿透：Frp</h1><p>Frp 是一个高性能的反向代理应用，可以帮助您轻松地进行内网穿透，对外网提供服务，支持 tcp, http, https 等协议类型，并且 web 服务支持根据域名进行路由转发。</p>
+<h2 id="服务端部署：Frps"><a href="#服务端部署：Frps" class="headerlink" title="服务端部署：Frps"></a>服务端部署：Frps</h2><p><a target="_blank" rel="noopener" href="https://github.com/MvsCode/frp-onekey">一键配置脚本</a></p>
+<p>配置说明：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Please input frps bind_port [1-65535](Default Server Port: 5443): <span class="comment">#输入frp提供服务的端口，用于服务器端和客户端通信，默认即可</span></span><br><span class="line">Please input frps vhost_http_port [1-65535](Default vhost_http_port: 80): <span class="comment">#输入frp进行http穿透的http服务端口，建议不用默认</span></span><br><span class="line">Please input frps vhost_https_port [1-65535](Default vhost_https_port: 443): <span class="comment">#输入frp进行https穿透的https服务端口，建议不用默认</span></span><br><span class="line">Please input frps dashboard_port [1-65535](Default dashboard_port: 6443):<span class="comment">#输入frp的控制台服务端口，用于查看frp工作状态，默认即可</span></span><br><span class="line">Please input dashboard_user (Default: admin):<span class="comment">#登录控制台的用户名，默认即可</span></span><br><span class="line">Please input dashboard_pwd (Default: kpkpM7VZ):<span class="comment">#登录控制台的密码，如果记不住默认的建议修改</span></span><br><span class="line">Please input privilege_token (Default: 9m2UAOWa6hx5Eise):<span class="comment">#输入frp服务器和客户端通信的密码，默认是随机生成的，默认即可</span></span><br><span class="line">Please input frps max_pool_count [1-200](Default max_pool_count: 50):<span class="comment">#设置每个代理可以创建的连接池上限，默认50</span></span><br><span class="line">==== Please select log_level ====</span><br><span class="line">1: info</span><br><span class="line">2: warn</span><br><span class="line">3: error</span><br><span class="line">4: debug</span><br><span class="line">==================================</span><br><span class="line">Enter your choice (1, 2, 3, 4 or <span class="built_in">exit</span>. default [1]): <span class="comment">#默认即可</span></span><br><span class="line">Please input frps log_max_days [1-30](Default log_max_days: 3 day):</span><br><span class="line">===== Please select log_file =====</span><br><span class="line">1: <span class="built_in">enable</span></span><br><span class="line">2: <span class="built_in">disable</span></span><br><span class="line">==================================</span><br><span class="line">Enter your choice (1, 2 or <span class="built_in">exit</span>. default [1]):<span class="comment">#默认即可</span></span><br></pre></td></tr></table></figure>
+
+<p>CentOS 下需要运行以下指令打开服务器防火墙端口 6443（Debian 默认开放防火墙，如果无法访问端口请查看服务器运行商网站控制台，编辑安全组策略）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开启6443端口</span></span><br><span class="line">firewall-cmd --zone=public --add-port=6443/tcp --permanent</span><br><span class="line">firewall-cmd --reload <span class="comment"># 重启防火墙</span></span><br><span class="line">firewall-cmd --list-ports <span class="comment"># 查看已开放端口</span></span><br><span class="line"><span class="comment"># 如果需要测试，可以尝试以下命令</span></span><br><span class="line">systemctl stop firewalld.service <span class="comment"># 停止防火墙</span></span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld.service <span class="comment"># 禁止防火墙开机启动</span></span><br><span class="line"><span class="comment"># 关闭已开放的端口</span></span><br><span class="line">firewall-cmd --zone=public --remove-port=80/tcp --permanent</span><br></pre></td></tr></table></figure>
+
+<p>在浏览器中打开 <code>服务器ip:6443</code>，输入控制台用户名和密码。如果可以进入控制台面板，表示 frps 部署成功，可以使用了。</p>
+<h2 id="客户端部署：Frpc"><a href="#客户端部署：Frpc" class="headerlink" title="客户端部署：Frpc"></a>客户端部署：Frpc</h2><p>在需要穿透的内网机器（Windows 远程桌面为例）上下载对应操作系统和版本的 <a target="_blank" rel="noopener" href="https://github.com/fatedier/frp/releases">Frp</a>，在 frpc.ini 中配置：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[common]</span></span><br><span class="line"><span class="attr">server_addr</span> = <span class="number">0.0</span>.<span class="number">0.0</span> <span class="comment"># 服务器地址</span></span><br><span class="line"><span class="attr">server_port</span> = <span class="number">5443</span> <span class="comment"># frp 提供服务的端口</span></span><br><span class="line"><span class="attr">protocol</span> = tcp <span class="comment"># 连接协议，可选 tcp/kcp</span></span><br><span class="line"><span class="attr">token</span> = <span class="number">12345678</span> <span class="comment"># 认证用</span></span><br><span class="line"></span><br><span class="line"><span class="section">[RDP]</span> <span class="comment"># 代理名称，可随意设置</span></span><br><span class="line"><span class="attr">type</span> = tcp <span class="comment"># 协议，可选 tcp/udp</span></span><br><span class="line"><span class="attr">local_ip</span> = <span class="number">127.0</span>.<span class="number">0.1</span></span><br><span class="line"><span class="attr">local_port</span> = <span class="number">3389</span> <span class="comment"># Windows 远程桌面端口</span></span><br><span class="line"><span class="comment"># if remote_port is 0, frps will assign a random port for you</span></span><br><span class="line"><span class="attr">remote_port</span> = <span class="number">6000</span></span><br></pre></td></tr></table></figure>
+
+<p>在 cmd 中 cd 到 frpc 文件目录下，执行 <code>frpc -c frpc.ini</code>（Powershell 中执行 <code>./frpc -c ./frpc.ini</code>），并确认服务器端 6000 端口已开放。此时在另一台电脑下打开 Remote Desktop，输入 <code>服务器ip:6000</code>，即可访问远程桌面。</p>
+<h1 id="科学上网：v2ray"><a href="#科学上网：v2ray" class="headerlink" title="科学上网：v2ray"></a>科学上网：v2ray</h1><h2 id="Linux-安装脚本"><a href="#Linux-安装脚本" class="headerlink" title="Linux 安装脚本"></a>Linux 安装脚本</h2><p>V2Ray 提供了一个在 Linux 中的自动化安装脚本。这个脚本会自动检测有没有安装过 V2Ray，如果没有，则进行完整的安装和配置；如果之前安装过 V2Ray，则只更新 V2Ray 二进制程序而不更新配置。</p>
+<p>以下指令假设已在 su 环境下，如果不是，请先运行 sudo su。</p>
+<p>运行下面的指令下载并安装 V2Ray。当 yum 或 apt-get 可用的情况下，此脚本会自动安装 unzip 和 daemon。这两个组件是安装 V2Ray 的必要组件。如果你使用的系统不支持 yum 或 apt-get，请自行安装 unzip 和 daemon。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash &lt;(curl -L -s https://install.direct/go.sh)</span><br></pre></td></tr></table></figure>
+
+<p>此脚本会配置自动运行脚本。自动运行脚本会在系统重启之后，自动运行 V2Ray。脚本运行完成后，你需要：</p>
+<ol>
+<li>编辑 /etc/v2ray/config.json 文件来配置你需要的代理方式；</li>
+<li>运行 service v2ray start 来启动 V2Ray 进程；</li>
+<li>之后可以使用 service v2ray start|stop|status|reload|restart|force-reload 控制 V2Ray 的运行。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/MariaSQL/" rel="tag"># MariaSQL</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E6%8A%80%E6%9C%AF/" rel="tag"># 网络技术</a>
+              <a href="/tags/%E7%A7%91%E5%AD%A6%E4%BD%BF%E7%94%A8/" rel="tag"># 科学使用</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/07/25/Anaconda-%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/" rel="prev" title="Anaconda 虚拟环境配置和使用">
+      <i class="fa fa-chevron-left"></i> Anaconda 虚拟环境配置和使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/10/08/JavaScript-%E5%8A%A8%E6%89%8B%E5%AD%A6-1/" rel="next" title="Javascript 动手学（1）- Javascript 简介">
+      Javascript 动手学（1）- Javascript 简介 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AXshell%EF%BC%8CPutty"><span class="nav-number">1.</span> <span class="nav-text">连接服务器：Xshell，Putty</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BB%E5%BD%95"><span class="nav-number">1.1.</span> <span class="nav-text">登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E9%94%80"><span class="nav-number">1.2.</span> <span class="nav-text">注销</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%EF%BC%9AFrp"><span class="nav-number">2.</span> <span class="nav-text">内网穿透：Frp</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%EF%BC%9AFrps"><span class="nav-number">2.1.</span> <span class="nav-text">服务端部署：Frps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%83%A8%E7%BD%B2%EF%BC%9AFrpc"><span class="nav-number">2.2.</span> <span class="nav-text">客户端部署：Frpc</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%EF%BC%9Av2ray"><span class="nav-number">3.</span> <span class="nav-text">科学上网：v2ray</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux-%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC"><span class="nav-number">3.1.</span> <span class="nav-text">Linux 安装脚本</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryanhui"
+      src="https://avatars1.githubusercontent.com/u/43368274?s=460&u=50a78f666213a52518d0076c1ca1cd9862076167&v=4">
+  <p class="site-author-name" itemprop="name">Ryanhui</p>
+  <div class="site-description" itemprop="description">写博客，不过是孤芳自赏</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ranhuiryan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ranhuiryan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qdgjhrh@outlook.com" title="E-Mail → mailto:qdgjhrh@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/wbgjh" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;wbgjh" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryanhui</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
